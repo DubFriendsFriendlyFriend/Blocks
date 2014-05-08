@@ -12,6 +12,8 @@ import org.lwjgl.input.Keyboard;
 public class Blocks {
 	
 	public ArrayList<Block> newBlock(blockType type, int x, int y, ArrayList<Block> blockArray){
+		x -= x % 20;
+		y -= y % 20;
 		Block block = new Block(type,x,y);
 		blockArray.add(block);
 		return(blockArray);
@@ -22,7 +24,7 @@ public class Blocks {
 		try{
 			
 			Display.setDisplayMode(new DisplayMode(640, 480));
-			Display.setTitle("LWJGL 2D Game Template");
+			Display.setTitle("Block Game");
 			Display.create();
 			
 		}
@@ -39,12 +41,22 @@ public class Blocks {
 		glMatrixMode(GL_MODELVIEW);
 		
 		ArrayList<Block> blocks = new ArrayList<Block>();
+		double mouseX,mouseY;
+		boolean leftMouseDown,leftMouseAlreadyDown = false;
 		
-		blocks = newBlock(blockType.DIRT,0,0,blocks);
-		blocks = newBlock(blockType.STONE,20,0,blocks);
-		blocks = newBlock(blockType.METAL,0,20,blocks);
+		blocks = newBlock(blockType.DIRT,2,0,blocks);
+		blocks = newBlock(blockType.STONE,32,0,blocks);
+		blocks = newBlock(blockType.METAL,3,22,blocks);
 		
 		while (!Display.isCloseRequested()){
+			
+			mouseX = Mouse.getX();
+			mouseY = 480 - Mouse.getY();
+			leftMouseDown = Mouse.isButtonDown(1);
+			
+			if(!leftMouseDown && leftMouseAlreadyDown){
+				leftMouseAlreadyDown = false;
+			}
 			
 			glClear(GL_COLOR_BUFFER_BIT);
 			
@@ -68,6 +80,10 @@ public class Blocks {
 			
 			Display.update();
 			Display.sync(60);
+			
+			if(leftMouseDown && !leftMouseAlreadyDown){
+				leftMouseAlreadyDown = true;
+			}
 			
 		}
 		
